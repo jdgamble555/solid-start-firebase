@@ -1,5 +1,5 @@
-import { Link, MetaProvider, Title } from "@solidjs/meta";
-import { Router } from "@solidjs/router";
+import { MetaProvider, Title } from "@solidjs/meta";
+import { Router, A } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 
@@ -10,11 +10,11 @@ export default function App() {
       root={props => (
         <MetaProvider>
           <Title>SolidStart - Firebase</Title>
-          <nav class="flex gap-3 justify-center mt-5">
-            <Link href="/">Home</Link>
-            <Link href="/about">About</Link>
-          </nav>
           <Suspense>{props.children}</Suspense>
+          <nav class="flex gap-3 justify-center mt-5">
+            <A href="/">Home</A>
+            <A href="/about">About</A>
+          </nav>
         </MetaProvider>
       )}
     >
