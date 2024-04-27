@@ -10,7 +10,7 @@ export default function Home() {
     return (
         <div class="text-center">
             <h1 class="text-3xl font-semibold my-3">
-                NextJS Firebase Todo App
+                Solid Start Firebase Todo App
             </h1>
             <Switch fallback={<Login />}>
                 <Match when={user.loading}>
