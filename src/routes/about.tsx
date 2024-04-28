@@ -18,13 +18,17 @@ export default function About() {
 
   return (
     <Show when={about()}>
-      <Title>About</Title>
-      <div class="flex items-center justify-center my-5">
-        <div class="border w-[400px] p-5 flex flex-col gap-3">
-          <h1 class="text-3xl font-semibold">{about()!.name}</h1>
-          <p>{about()!.description}</p>
-        </div>
-      </div>
+      {(data) => (
+        <>
+          <Title>About</Title>
+          <div class="flex items-center justify-center my-5">
+            <div class="border w-[400px] p-5 flex flex-col gap-3">
+              <h1 class="text-3xl font-semibold">{data().name}</h1>
+              <p>{data().description}</p>
+            </div>
+          </div>
+        </>
+      )}
     </Show>
   );
 };
