@@ -2,7 +2,7 @@ import { Show } from "solid-js";
 import { TodoItem, deleteTodo, updateTodo } from "~/lib/use-todos";
 
 // each todo item
-export const Todo = ({ todo }: { todo: TodoItem, key: string }) => {
+export const Todo = ({ todo }: { todo: TodoItem }) => {
     return (
         <>
             <span class={todo.complete ? 'line-through text-green-700' : ''}>

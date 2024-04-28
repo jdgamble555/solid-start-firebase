@@ -18,7 +18,7 @@ export default function Todos() {
                     <div class="grid grid-cols-[auto,auto,auto,auto] gap-3 justify-items-start">
                         <For each={todoStore.todos} fallback={<p><b>Add your first todo item!</b></p>}>
                             {(todo, _index) => (
-                                <Todo key={todo.id} {...{ todo }} />
+                                <Todo {...{ todo }} />
                             )}
                         </For>
                     </div>
