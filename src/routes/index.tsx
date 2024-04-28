@@ -4,9 +4,9 @@ import { Provider } from "~/lib/use-shared";
 export default function Index() {
   return (
     <main>
-        <Provider>
-            <Home />
-        </Provider>
+      <Provider>
+        <Home />
+      </Provider>
     </main>
   );
 }
