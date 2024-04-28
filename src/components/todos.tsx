@@ -14,20 +14,16 @@ export default function Todos() {
     return (
         <Show when={user.data}>
             {(user) => (
-                <Show when={todoStore?.todos} >
-                    {(todos) => (
-                        <>
-                            <div class="grid grid-cols-[auto,auto,auto,auto] gap-3 justify-items-start">
-                                <For each={todos()} fallback={<p><b>Add your first todo item!</b></p>}>
-                                    {(todo, _index) => (
-                                        <Todo key={todo.id} {...{ todo }} />
-                                    )}
-                                </For>
-                            </div>
-                            <TodoForm {...user()} />
-                        </>
-                    )}
-                </Show >
+                <>
+                    <div class="grid grid-cols-[auto,auto,auto,auto] gap-3 justify-items-start">
+                        <For each={todoStore.todos} fallback={<p><b>Add your first todo item!</b></p>}>
+                            {(todo, _index) => (
+                                <Todo key={todo.id} {...{ todo }} />
+                            )}
+                        </For>
+                    </div>
+                    <TodoForm {...user()} />
+                </>
             )}
         </Show>
     );

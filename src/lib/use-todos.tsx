@@ -71,7 +71,7 @@ export function useTodos() {
 
     if (!user.data) {
         setTodos({ loading: false, todos: [] });
-        return;
+        return _store[0];
     }
 
     const unusbscribe = onSnapshot(
