@@ -9,7 +9,9 @@ import {
 const _Map = <T,>() => new Map<string, T>();
 const Context = createContext(_Map());
 
-export const Provider: Component<{ children: JSX.Element }> = ({ children }) =>
+export const Provider: Component<{ children: JSX.Element }> = ({
+    children
+}) =>
     <Context.Provider value={_Map()}>{children}</Context.Provider>;
 
 const useContextProvider = <T,>(key: string) => {

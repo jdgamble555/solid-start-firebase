@@ -1,7 +1,8 @@
 import {
     type DocumentData,
     onSnapshot,
-    type QuerySnapshot
+    type QuerySnapshot,
+    Timestamp
 } from 'firebase/firestore';
 import {
     addDoc,
@@ -18,7 +19,7 @@ import {
 import { db } from './firebase';
 import { useUser } from './use-user';
 import { createStore } from 'solid-js/store';
-import { createEffect } from 'solid-js';
+import { onCleanup } from 'solid-js';
 
 export interface TodoItem {
     id: string;
@@ -37,10 +38,13 @@ export const snapToData = (
         return [];
     }
     return q.docs.map((doc) => {
-        const data = doc.data();
+        const data = doc.data({
+            serverTimestamps: 'estimate'
+        });
+        const created = data.created as Timestamp;
         return {
             ...data,
-            created: new Date(data.created?.toMillis()),
+            created: created.toDate(),
             id: doc.id
         }
     }) as TodoItem[];
@@ -63,45 +67,42 @@ export function useTodos() {
 
     const setTodos = _store[1];
 
-    createEffect(() => {
+    setTodos(v => ({ ...v, loading: true }));
 
-        setTodos(v => ({ ...v, loading: true }));
+    if (!user.data) {
+        setTodos({ loading: false, todos: [] });
+        return;
+    }
 
-        if (!user.data) {
-            setTodos({ loading: false, todos: [] });
-            return;
-        }
+    const unusbscribe = onSnapshot(
 
-        return onSnapshot(
+        // query realtime todo list
+        query(
+            collection(db, 'todos'),
+            where('uid', '==', user.data.uid),
+            orderBy('created')
+        ), (q) => {
 
-            // query realtime todo list
-            query(
-                collection(db, 'todos'),
-                where('uid', '==', user.data.uid),
-                orderBy('created')
-            ), (q) => {
+            // get data, map to todo type
+            const data = snapToData(q);
 
-                // get data, map to todo type
-                const data = snapToData(q);
+            /**
+             * Note: Will get triggered 2x on add 
+             * 1 - for optimistic update
+             * 2 - update real date from server date
+             */
 
-                /**
-                 * Note: Will get triggered 2x on add 
-                 * 1 - for optimistic update
-                 * 2 - update real date from server date
-                 */
+            // print data in dev mode
+            if (process.env.NODE_ENV === 'development') {
+                console.log(data);
+            }
 
-                // print data in dev mode
-                if (process.env.NODE_ENV === 'development') {
-                    console.log(data);
-                }
+            // add to store
+            setTodos({ loading: false, todos: data });
 
-                // add to store
-            
-                setTodos({ loading: false, todos: data });
+        });
 
-            });
-
-    }, [setTodos, user.data]);
+    onCleanup(unusbscribe);
 
     return _store[0];
 };
