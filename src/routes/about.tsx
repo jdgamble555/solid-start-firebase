@@ -14,7 +14,7 @@ export const route = {
 
 export default function About() {
 
-  const about = createAsync(() => getAboutPage());
+  const about = createAsync(() => getAboutPage(), { deferStream: true });
 
   return (
     <Show when={about()}>
