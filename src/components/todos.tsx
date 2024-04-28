@@ -1,7 +1,7 @@
 import { addTodo, useTodos } from "~/lib/use-todos";
 import { useUser, userData } from "~/lib/use-user";
 import { Todo } from "./todo-item";
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 
 export default function Todos() {
 
@@ -11,23 +11,26 @@ export default function Todos() {
 
     const user = _user[0];
 
-    if (!user.data) {
-        return;
-    }
-
     return (
-        <div>
-            <div class="grid grid-cols-[auto,auto,auto,auto] gap-3 justify-items-start">
-                <For each={todoStore.todos} fallback={<p><b>Add your first todo item!</b></p>}>
-                    {(todo, _index) => (
-                        <Todo key={todo.id} {...{ todo }} />
+        <Show when={user.data}>
+            {(user) => (
+                <Show when={todoStore?.todos} >
+                    {(todos) => (
+                        <>
+                            <div class="grid grid-cols-[auto,auto,auto,auto] gap-3 justify-items-start">
+                                <For each={todos()} fallback={<p><b>Add your first todo item!</b></p>}>
+                                    {(todo, _index) => (
+                                        <Todo key={todo.id} {...{ todo }} />
+                                    )}
+                                </For>
+                            </div>
+                            <TodoForm {...user()} />
+                        </>
                     )}
-                </For>
-            </div>
-            <TodoForm {...user.data} />
-        </div>
+                </Show >
+            )}
+        </Show>
     );
-
 }
 
 export const TodoForm = (user: userData) => {
