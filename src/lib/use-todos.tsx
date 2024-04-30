@@ -19,7 +19,7 @@ import {
 import { db } from './firebase';
 import { useUser } from './use-user';
 import { createStore } from 'solid-js/store';
-import { onCleanup } from 'solid-js';
+import { createComputed, onCleanup } from 'solid-js';
 
 export interface TodoItem {
     id: string;
@@ -67,42 +67,54 @@ export function useTodos() {
 
     const setTodos = _store[1];
 
-    setTodos(v => ({ ...v, loading: true }));
+    setTodos(v => ({
+        ...v,
+        loading: true
+    }));
 
-    if (!user.data) {
-        setTodos({ loading: false, todos: [] });
-        return _store[0];
-    }
+    createComputed(() => {
 
-    const unusbscribe = onSnapshot(
+        if (!user.data) {
+            setTodos({
+                loading: false,
+                todos: []
+            });
+            return _store[0];
+        }
 
-        // query realtime todo list
-        query(
-            collection(db, 'todos'),
-            where('uid', '==', user.data.uid),
-            orderBy('created')
-        ), (q) => {
+        const unsubscribe = onSnapshot(
 
-            // get data, map to todo type
-            const data = snapToData(q);
+            // query realtime todo list
+            query(
+                collection(db, 'todos'),
+                where('uid', '==', user.data.uid),
+                orderBy('created')
+            ), (q) => {
 
-            /**
-             * Note: Will get triggered 2x on add 
-             * 1 - for optimistic update
-             * 2 - update real date from server date
-             */
+                // get data, map to todo type
+                const data = snapToData(q);
 
-            // print data in dev mode
-            if (process.env.NODE_ENV === 'development') {
-                console.log(data);
-            }
+                /**
+                 * Note: Will get triggered 2x on add 
+                 * 1 - for optimistic update
+                 * 2 - update real date from server date
+                 */
 
-            // add to store
-            setTodos({ loading: false, todos: data });
+                // print data in dev mode
+                if (process.env.NODE_ENV === 'development') {
+                    console.log(data);
+                }
 
-        });
+                // add to store
+                setTodos({
+                    loading: false,
+                    todos: data
+                });
 
-    onCleanup(unusbscribe);
+            });
+
+        onCleanup(unsubscribe);
+    });
 
     return _store[0];
 };
