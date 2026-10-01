@@ -1,14 +1,15 @@
-import { Title } from "@solidjs/meta";
+import { Meta, Title } from "@solidjs/meta";
 import Home from "~/components/home";
-import { Provider } from "~/lib/use-shared";
+import { UserProvider } from "~/lib/use-user";
 
 export default function Index() {
   return (
     <main>
-      <Provider>
+      <UserProvider>
         <Title>SolidStart - Firebase</Title>
+        <Meta name="description" content="Sign in with Google and manage your realtime Firebase todo list with SolidStart." />
         <Home />
-      </Provider>
+      </UserProvider>
     </main>
   );
 }

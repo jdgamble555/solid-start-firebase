@@ -1,15 +1,15 @@
 import { Title } from "@solidjs/meta";
-import { RouteDefinition, cache, createAsync } from "@solidjs/router";
+import { RouteDefinition, query, createAsync } from "@solidjs/router";
 import { Show } from "solid-js";
-import { getAbout } from "~/lib/about";
 
-const getAboutPage = cache(async () => {
+const getAboutPage = query(async () => {
   'use server';
+  const { getAbout } = await import("~/lib/about");
   return await getAbout();
 }, 'about');
 
 export const route = {
-  load: () => getAboutPage(),
+  preload: () => getAboutPage(),
 } satisfies RouteDefinition;
 
 export default function About() {

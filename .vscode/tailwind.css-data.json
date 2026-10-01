@@ -1,0 +1,25 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@tailwind",
+      "description": "Insert Tailwind's base, components, or utilities styles."
+    },
+    {
+      "name": "@apply",
+      "description": "Inline existing Tailwind utility classes."
+    },
+    {
+      "name": "@layer",
+      "description": "Assign styles to a Tailwind layer."
+    },
+    {
+      "name": "@config",
+      "description": "Specify the Tailwind configuration file."
+    },
+    {
+      "name": "@screen",
+      "description": "Create a media query using a Tailwind breakpoint."
+    }
+  ]
+}

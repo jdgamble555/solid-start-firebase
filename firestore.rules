@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function validTodo(data) {
+      return data.uid is string && data.text is string &&
+        data.text.size() > 0 && data.complete is bool && data.createdAt is timestamp;
+    }
+    match /todos/{id} {
+      allow read, delete: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid &&
+        validTodo(request.resource.data) &&
+        request.resource.data.keys().hasOnly(['uid', 'text', 'complete', 'createdAt']) &&
+        request.resource.data.complete == false &&
+        request.resource.data.createdAt == request.time;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid &&
+        validTodo(request.resource.data) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['complete', 'updatedAt']) &&
+        request.resource.data.updatedAt == request.time;
+    }
+    match /about/{id} {
+      allow read: if id == 'ZlNJrKd6LcATycPRmBPA';
+      allow write: if false;
+    }
+  }
+}

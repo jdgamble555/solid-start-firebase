@@ -1,22 +1,24 @@
-import { doc, getDoc, getFirestore } from "firebase/firestore/lite";
-import { app } from "./firebase";
+import { doc, getDoc } from "firebase/firestore/lite";
+import * as v from "valibot";
+import { serverDB } from "./firebase-lite";
 
-const db = getFirestore(app);
+const AboutDocSchema = v.object({
+  name: v.string(),
+  description: v.string(),
+});
 
-type AboutDoc = {
-    name: string;
-    description: string;
-};
+export async function getAbout() {
+  const snapshot = await getDoc(doc(serverDB, "about/ZlNJrKd6LcATycPRmBPA"));
 
-export const getAbout = async () => {
+  if (!snapshot.exists()) {
+    throw new Error("About document does not exist.");
+  }
 
-    const aboutSnap = await getDoc(
-        doc(db, '/about/ZlNJrKd6LcATycPRmBPA')
-    );
+  const result = v.safeParse(AboutDocSchema, snapshot.data());
 
-    if (!aboutSnap.exists()) {
-        throw 'Document does not exist!';
-    }
+  if (!result.success) {
+    throw new Error("Malformed About document.");
+  }
 
-    return aboutSnap.data() as AboutDoc;
-};
+  return result.output;
+}

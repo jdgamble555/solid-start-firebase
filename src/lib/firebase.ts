@@ -1,17 +1,12 @@
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-import { getApp, getApps, initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+const config = JSON.parse(import.meta.env.VITE_PUBLIC_FIREBASE_CONFIG);
 
-const firebase_config = JSON.parse(
-    import.meta.env.VITE_PUBLIC_FIREBASE_CONFIG
-);
-
-// initialize and login
-
-export const app = getApps().length
-    ? getApp()
-    : initializeApp(firebase_config);
+export const app = getApps()
+  ? getApp()
+  : initializeApp(config);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
